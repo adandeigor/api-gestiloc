@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma.config";
 import { ContratUpdateValidator } from "@/validators/contrat.validator";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string, propId: string , unitLocId: string, locataireId: string}> }) {
-    const { id, propId, unitLocId, locataireId } = await params;
+    const {  unitLocId, locataireId } = await params;
     try {
         const contrats = await prisma.contrat.findMany({
             where: {
@@ -24,7 +24,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string, contratId: string }> }) {
-    const { id, propId, unitLocId, locataireId, contratId } = await params;
+    const {  unitLocId, locataireId, contratId } = await params;
     try {
         // Vérification de la présence du contrat
         const existingContrat = await prisma.contrat.findUnique({
@@ -55,7 +55,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string, contratId: string }> }) {
-    const { id, propId, unitLocId, locataireId, contratId } = await params;
+    const {  unitLocId, locataireId, contratId } = await params;
     const body = await request.json();
 
     try {

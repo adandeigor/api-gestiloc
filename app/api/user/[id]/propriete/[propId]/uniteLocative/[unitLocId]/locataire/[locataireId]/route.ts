@@ -4,8 +4,8 @@ import { LocataireUpdateValidator } from "@/validators/locataire.validator";
 import { z } from "zod";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string }>  }) {
-    const { id, propId, unitLocId, locataireId } = await params;
-    const user = await VerifyUserSession(request, id);
+    const { id, unitLocId, locataireId } = await params;
+     await VerifyUserSession(request, id);
     try {
         const locataire = await prisma.locataire.findUnique({
             where: { id: Number(locataireId), uniteLocativeId: Number(unitLocId) },
@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
                 headers: { "Content-Type": "application/json" }
             });
     } catch (error) {
-        return new Response(JSON.stringify({ error: "Erreur interne du serveur" }), {
+        return new Response(JSON.stringify({ error: "Erreur interne du serveur" , details : error}), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });
@@ -31,8 +31,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string }>  }) {
-    const { id, propId, unitLocId, locataireId } = await params;
-    const user = await VerifyUserSession(request, id);
+    const { id, unitLocId, locataireId } = await params;
+     await VerifyUserSession(request, id);
     try {
         // Vérification si l'unité locative existe
         const existingUnit = await prisma.locataire.findUnique({
@@ -55,7 +55,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
                 headers: { "Content-Type": "application/json" }
             });
     } catch (error) {
-        return new Response(JSON.stringify({ error: "Erreur interne du serveur" }), {
+        return new Response(JSON.stringify({ error: "Erreur interne du serveur", details: error }), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });
@@ -63,8 +63,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string }>  }) {
-    const { id, propId, unitLocId, locataireId } = await params;
-    const user = await VerifyUserSession(request, id);
+    const { id, unitLocId, locataireId } = await params;
+     await VerifyUserSession(request, id);
     try {
         const data = await request.json();
         const validatedData = LocataireUpdateValidator.parse(data);

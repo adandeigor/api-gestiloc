@@ -25,7 +25,7 @@ export async function GET (request:Request, { params }: { params: Promise<{ id: 
                 headers: { "Content-Type": "application/json" }
             })
     } catch (error) {
-        return new Response(JSON.stringify({ error: "Erreur interne du serveur" }), {
+        return new Response(JSON.stringify({ error: "Erreur interne du serveur" , details : error}), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         })
@@ -58,7 +58,7 @@ export async function DELETE (request:Request, { params }: { params: Promise<{ i
                 headers: { "Content-Type": "application/json" }
             })
     } catch (error) {
-        return new Response(JSON.stringify({ error: "Erreur interne du serveur" }), {
+        return new Response(JSON.stringify({ error: "Erreur interne du serveur" , details : error}), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         })

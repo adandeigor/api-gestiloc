@@ -5,7 +5,7 @@ import { z } from "zod";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string }> }) {
     const { id, propId, unitLocId } = await params;
-    const user = await VerifyUserSession(request, id);
+     await VerifyUserSession(request, id);
     try {
         const uniteLocative = await prisma.uniteLocative.findUnique({
             where: { id: Number(unitLocId), proprieteId: Number(propId) },
@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
                 headers: { "Content-Type": "application/json" }
             });
     } catch (error) {
-        return new Response(JSON.stringify({ error: "Erreur interne du serveur" }), {
+        return new Response(JSON.stringify({ error: "Erreur interne du serveur" , details: error}), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });
@@ -33,7 +33,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string }> }) {
     const { id, propId, unitLocId } = await params;
-    const user = await VerifyUserSession(request, id);
+     await VerifyUserSession(request, id);
     try {
         // Vérification si l'unité locative existe
         const existingUnit = await prisma.uniteLocative.findUnique({
@@ -56,7 +56,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
                 headers: { "Content-Type": "application/json" }
             });
     } catch (error) {
-        return new Response(JSON.stringify({ error: "Erreur interne du serveur" }), {
+        return new Response(JSON.stringify({ error: "Erreur interne du serveur" , details: error}), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });
@@ -66,7 +66,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string }> }) {
     const { id, propId, unitLocId } = await params;
-    const user = await VerifyUserSession(request, id);
+     await VerifyUserSession(request, id);
     try {
         const data = await request.json();
         const validatedData = UniteLocativeUpdateValidator.parse(data);

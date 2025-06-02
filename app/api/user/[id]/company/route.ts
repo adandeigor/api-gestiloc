@@ -1,6 +1,7 @@
 import { VerifyUserSession } from "@/core/verifyUserSession";
 import prisma from "@/lib/prisma.config";
 import { CompanyValidator, CompanyUpdateValidator } from "@/validators/company.validator";
+import { de } from "@faker-js/faker";
 import { z } from "zod";
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
@@ -52,8 +53,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     // Vérifier la session utilisateur
     try {
       await VerifyUserSession(req, id);
-    } catch (sessionError) {
-      return Response.json({ error: "Session utilisateur invalide ou expirée" }, { status: 401 });
+    } catch (error) {
+      return Response.json({ error: "Session utilisateur invalide ou expirée" , details: error}, { status: 401 });
     }
 
     // Lire et valider le corps de la requête

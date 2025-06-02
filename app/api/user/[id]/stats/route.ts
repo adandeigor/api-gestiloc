@@ -1,6 +1,6 @@
 import { VerifyUserSession } from "@/core/verifyUserSession"
 import prisma from "@/lib/prisma.config"
-
+import bcrypt from "bcrypt"
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
     if (!id) {
@@ -61,7 +61,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Retirer le mot de passe du gestionnaire
     const { motDePasse, ...gestionnaireSansMdp } = gestionnaire
-
+    //essai de faire un truc avec le mot de passe après l'avoir retiré
+    await bcrypt.hash(motDePasse, 10)
     return Response.json({
         gestionnaire: {
             ...gestionnaireSansMdp,

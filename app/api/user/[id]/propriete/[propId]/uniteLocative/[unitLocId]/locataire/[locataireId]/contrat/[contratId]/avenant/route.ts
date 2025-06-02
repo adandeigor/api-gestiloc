@@ -8,8 +8,8 @@ const AvenantValidator = z.object({
     documentUrl: z.array(z.string().url(), { message: "Chaque document doit être une URL valide" }).optional(),
 });
 export async function GET(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string, contratId: string }> }) {
-    const { id, propId, unitLocId, locataireId, contratId } = await params;
-    const user = await VerifyUserSession(request, id);
+    const { id, contratId } = await params;
+     await VerifyUserSession(request, id);
     try {
         const avenant = await prisma.avenant.findMany({
             where: {
@@ -33,7 +33,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string, contratId: string }> }) {
-    const { id, propId, unitLocId, locataireId, contratId } = await params;
+    const { id, contratId } = await params;
     const user = await VerifyUserSession(request, id);
     const body = await request.json();
     const validatedData = AvenantValidator.parse(body);

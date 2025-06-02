@@ -4,7 +4,7 @@ import { ContratValidator } from "@/validators/contrat.validator";
 import { z } from "zod";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string }> }) {
-    const { id, propId, unitLocId, locataireId } = await params;
+    const { id, unitLocId, locataireId } = await params;
     const body = await request.json();
     const user = await VerifyUserSession(request, id);
     const validatedData = ContratValidator.parse(body);
@@ -38,7 +38,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 }
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string }> }) {
-    const { id, propId, unitLocId, locataireId } = await params;
+    const { id, unitLocId, locataireId } = await params;
     await VerifyUserSession(request, id);
     try {
         const contrats = await prisma.contrat.findMany({

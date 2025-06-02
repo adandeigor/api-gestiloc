@@ -5,7 +5,7 @@ import { z } from "zod";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string, propId: string }> }) {
     const { id, propId } = await params;
-    const user = await VerifyUserSession(request, id);
+    await VerifyUserSession(request, id);
     try {
         const uniteLocative = await prisma.uniteLocative.findMany({
             where: { proprieteId: Number(propId) },
@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
                 headers: { "Content-Type": "application/json" }
             });
     } catch (error) {
-        return new Response(JSON.stringify({ error: "Erreur interne du serveur" }), {
+        return new Response(JSON.stringify({ error: "Erreur interne du serveur", details: error }), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });

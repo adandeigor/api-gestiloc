@@ -13,7 +13,7 @@ export async function uploadToSupabase(file: File | null, folder: string, userId
   if (!file) return null;
   const fileExt = file.name.split('.').pop();
   const filePath = `${folder}/${userId}_${Date.now()}.${fileExt}`;
-  const { data, error } = await supabase.storage
+  const {  error } = await supabase.storage
     .from("gestionnaire")
     .upload(filePath, file.stream(), {
       contentType: file.type,
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!id || isNaN(parseInt(id)) || parseInt(id) <= 0) {
     return Response.json({ error: "ID invalide ou manquant" }, { status: 400 });
   }
-  const user = await VerifyUserSession(req, id);
+  await VerifyUserSession(req, id);
 
   try {
     console.log("Début du handler profile");

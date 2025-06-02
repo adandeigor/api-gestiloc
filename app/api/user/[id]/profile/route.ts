@@ -9,21 +9,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export async function uploadToSupabase(file: File | null, folder: string, userId: string) {
-  if (!file) return null;
-  const fileExt = file.name.split('.').pop();
-  const filePath = `${folder}/${userId}_${Date.now()}.${fileExt}`;
-  const {  error } = await supabase.storage
-    .from("gestionnaire")
-    .upload(filePath, file.stream(), {
-      contentType: file.type,
-      upsert: true,
-    });
-  if (error) throw new Error(error.message);
-  // Génère l'URL publique
-  const { data: publicUrlData } = supabase.storage.from("gestionnaire").getPublicUrl(filePath);
-  return publicUrlData.publicUrl;
-}
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

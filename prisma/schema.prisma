@@ -1,0 +1,260 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Gestionnaire {
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  motDePasse String
+  nom        String
+  prenom     String?
+  telephone  String?
+  isAdmin    Boolean     @default(false)
+  statut   GestionnaireStatut @default(EN_ATTENTE)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  dossiergestionnaire DossierGestionnaire?
+  auditLogs  AuditLog[]
+  proprietes Propriete[]
+  notifications Notification[]
+  sessions      Session[]
+  company Company?
+  templates Template[]
+}
+
+enum GestionnaireStatut {
+  VALIDE
+  EN_ATTENTE
+}
+enum GestionnaireRole {
+  GESTIONNAIRE
+  PARTICULIER
+}
+
+model DossierGestionnaire {
+  id Int @id @default(autoincrement())
+  ifu_number String 
+  ifu_file String 
+  carte_identite_number String
+  carte_identite_file String 
+  nationalite String
+  adresse String
+  ville String
+  code_postal String
+  pays String
+  date_naissance DateTime
+  registre_commerce String?
+  role GestionnaireRole?  //gestionnaire || particulier
+  gestionnaireId Int @unique
+  gestionnaire Gestionnaire @relation(fields: [gestionnaireId], references: [id])
+}
+
+model Propriete {
+  id              Int             @id @default(autoincrement())
+  nom             String
+  adresse         String
+  ville           String
+  codePostal      String
+  pays            String
+  gestionnaireId  Int
+  localisation Json
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  gestionnaire    Gestionnaire            @relation(fields: [gestionnaireId], references: [id])
+  unitesLocatives UniteLocative[]
+}
+
+model UniteLocative {
+  id          Int       @id @default(autoincrement())
+  nom         String
+  description String?
+  prix        Float @default(0)
+  proprieteId Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  contrats    Contrat[]
+  propriete   Propriete @relation(fields: [proprieteId], references: [id])
+  locataires  Locataire[]
+}
+
+model Locataire {
+  id        Int        @id @default(autoincrement())
+  email     String     
+  nom       String
+  prenom    String
+  telephone String
+  carte_identite String
+  photo_identite String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  uniteLocativeId Int? @unique
+  uniteLocative UniteLocative? @relation(fields: [uniteLocativeId], references: [id])
+  contrats  Contrat[]
+  paiements Paiement[]
+}
+
+model Contrat {
+  id               Int             @id @default(autoincrement())
+  locataireId      Int
+  uniteLocativeId  Int
+  dateDebut        DateTime
+  dateFin          DateTime?
+  loyerMensuel     Float
+  typeContrat      String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  isLocked         Boolean         @default(false) // ← ajout ici
+  locataire        Locataire       @relation(fields: [locataireId], references: [id])
+  uniteLocative    UniteLocative   @relation(fields: [uniteLocativeId], references: [id])
+  etatsDesLieux    EtatDesLieux[]
+  paiements        Paiement[]
+  chargeDetaillees ChargeDetaillee[]
+  signatures       Signature[]
+  avenants         Avenant[]
+  @@unique([locataireId, uniteLocativeId, dateDebut]) // Un contrat unique par locataire et unité locative
+  @@index([locataireId, uniteLocativeId]) // Index pour améliorer les performances des requêtes
+}
+
+
+model ChargeDetaillee {
+  id          Int       @id @default(autoincrement())
+  contratId   Int
+  libelle     String    // exemple : "Entretien parties communes"
+  montant     Float
+  contrat     Contrat   @relation(fields: [contratId], references: [id])
+}
+
+
+model EtatDesLieux {
+  id         Int         @id @default(autoincrement())
+  contratId  Int
+  type       TypeEtatDesLieux // entree, sortie
+  date       DateTime
+  details    Json
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  contrat    Contrat     @relation(fields: [contratId], references: [id])
+  signatures Signature[]
+   @@unique([contratId, type]) 
+}
+
+enum TypeEtatDesLieux {
+  ENTREE
+  SORTIE
+}
+
+model Avenant {
+  id         Int       @id @default(autoincrement())
+  contratId  Int
+  titre      String
+  contenu    String
+  createdAt  DateTime  @default(now())
+  documentUrl String[]
+  contrat    Contrat   @relation(fields: [contratId], references: [id])
+}
+
+
+model PaymentLink {
+  id         Int      @id @default(autoincrement())
+  paiementId Int
+  lien       String   @unique
+  expireAt   DateTime
+  status     String // pending, completed, expired
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  paiement   Paiement @relation(fields: [paiementId], references: [id])
+}
+
+model Paiement {
+  id            Int           @id @default(autoincrement())
+  contratId     Int
+  locataireId   Int
+  montant       Float
+  datePaiement  DateTime
+  transactionId String?       @unique
+  status        String
+  paymentMethod String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  contrat       Contrat       @relation(fields: [contratId], references: [id])
+  locataire     Locataire     @relation(fields: [locataireId], references: [id])
+  paymentLinks  PaymentLink[]
+}
+
+model Signature {
+  id             Int           @id @default(autoincrement())
+  contratId      Int?
+  etatDesLieuxId Int?
+  signataireId   Int
+  signataireType String
+  signatureData  String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  contrat        Contrat?      @relation(fields: [contratId], references: [id])
+  etatDesLieux   EtatDesLieux? @relation(fields: [etatDesLieuxId], references: [id])
+}
+
+model AuditLog {
+  id             Int      @id @default(autoincrement())
+  gestionnaireId Int
+  action         String
+  details        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  adminId        Int?
+  gestionnaire   Gestionnaire     @relation(fields: [gestionnaireId], references: [id])
+}
+
+model Notification {
+  id             Int      @id @default(autoincrement())
+  gestionnaireId Int
+  type           String
+  message        String
+  read           Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  adminId        Int?
+  gestionnaire   Gestionnaire     @relation(fields: [gestionnaireId], references: [id])
+}
+
+model Session {
+  id             Int      @id @default(autoincrement())
+  gestionnaireId Int? @unique
+  token          String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  adminId        Int? @unique
+  gestionnaire   Gestionnaire?     @relation(fields: [gestionnaireId], references: [id])
+}
+
+model Company {
+  id              Int       @id @default(autoincrement())
+  name            String
+  type            String
+  registre_commerce_number String @default("")
+  registre_commerce_file String @default("")
+  address         String
+  latitude        Float?
+  longitude       Float?
+  description     String
+  gestionnaireId  Int?      @unique
+  gestionnaire    Gestionnaire? @relation(fields: [gestionnaireId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Template {
+  id          Int      @id @default(autoincrement())
+  name        String
+  type        String // contrat, avenant, etc.
+  structure     Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  gestionnaireId Int
+  gestionnaire Gestionnaire @relation(fields: [gestionnaireId], references: [id])
+}

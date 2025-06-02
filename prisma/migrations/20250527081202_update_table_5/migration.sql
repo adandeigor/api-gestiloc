@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "UniteLocative" ADD COLUMN     "prix" DOUBLE PRECISION NOT NULL DEFAULT 0;

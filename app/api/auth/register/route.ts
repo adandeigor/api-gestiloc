@@ -51,9 +51,9 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return Response.json(
-      { error: error.message || "Une erreur est survenue" },
+      { error: "Erreur serveur", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

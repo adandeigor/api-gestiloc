@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma.config';
+export const runtime = 'nodejs';
 
 export interface AuthenticatedRequest extends NextApiRequest {
   user?: { userId: number; email: string };

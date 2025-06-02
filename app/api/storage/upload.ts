@@ -39,7 +39,10 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ path: data.path }, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Erreur serveur", details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
   }
 }

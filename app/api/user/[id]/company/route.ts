@@ -1,7 +1,6 @@
 import { VerifyUserSession } from "@/core/verifyUserSession";
 import prisma from "@/lib/prisma.config";
-import { uploadToSupabase } from "../profile/route";
-import {CompanyValidator, CompanyUpdateValidator} from "@/validators/company.validator";
+import { CompanyValidator, CompanyUpdateValidator } from "@/validators/company.validator";
 import { z } from "zod";
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {

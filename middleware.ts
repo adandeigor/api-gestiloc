@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
 import prisma from './lib/prisma.config';
-
+export const runtime = 'nodejs';
 // Liste des routes publiques (aucune authentification JWT requise)
 
 

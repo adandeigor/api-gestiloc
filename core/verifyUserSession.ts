@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma.config";
-import jwt from "jsonwebtoken";
 
 export async function VerifyUserSession(req: Request, id: string) {
     if (!id || isNaN(parseInt(id)) || parseInt(id) <= 0) {

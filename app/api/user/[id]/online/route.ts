@@ -1,6 +1,5 @@
 import { VerifyUserSession } from "@/core/verifyUserSession";
 import prisma from "@/lib/prisma.config";
-import { on } from "events";
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     const { id } = params;

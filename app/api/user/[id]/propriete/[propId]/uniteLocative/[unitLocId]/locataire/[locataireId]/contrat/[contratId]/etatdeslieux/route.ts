@@ -82,14 +82,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
             },
         });
         return new Response(JSON.stringify(etatDesLieux), { status: 201 });
-    } catch (error: any) {
+    } catch (error:unknown) {
         if (error instanceof Error) {
             return new Response(JSON.stringify({ error: error.message }), { status: 500 });
         }
         if (error instanceof z.ZodError) {
             return new Response(JSON.stringify({ error: error.issues }), { status: 400 });
         }
-        if (error.code === 'P2002') {
+        if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'P2002') {
             return new Response(JSON.stringify({ error: "Un état des lieux de ce type existe déjà pour ce contrat" }), { status: 400 });
         }
         return new Response(JSON.stringify({ error: "Une erreur inconnue est survenue" }), { status: 500 });

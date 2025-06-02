@@ -1,6 +1,4 @@
 import prisma from "@/lib/prisma.config";
-import jwt from "jsonwebtoken";
-
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   if (!id) {
@@ -34,7 +32,10 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     });
 
     return Response.json({ message: "Déconnexion réussie, token invalidé" }, { status: 200 });
-  } catch (error: any) {
-    return Response.json({ error: error.message || "Erreur serveur" }, { status: 500 });
+  } catch (error) {
+    return Response.json(
+      { error: "Erreur serveur", details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    )
   }
 }

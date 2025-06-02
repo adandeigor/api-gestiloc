@@ -3,6 +3,7 @@ import { LoginValidator } from "@/validators/auth.validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+export const runtime = 'nodejs';
 export async function POST(req: Request) {
   try {
     const data = await req.json();
@@ -75,9 +76,9 @@ export async function POST(req: Request) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     return Response.json(
-      { error: "Erreur serveur", details: error.message },
+      { error: "Erreur serveur", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

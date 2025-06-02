@@ -1,4 +1,3 @@
-import { parseFormData } from "@/core/bodyParser";
 import { VerifyUserSession } from "@/core/verifyUserSession";
 import prisma from "@/lib/prisma.config";
 import { ProfileValidator } from "@/validators/profile.validator";
@@ -55,9 +54,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     console.log("Insertion OK :", result);
 
     return Response.json({ message: "Profil mis à jour avec succès" }, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erreur dans /profile :", error);
-    return Response.json({ error: error.message || error }, { status: 500 });
+    return Response.json(
+      { error: "Erreur serveur", details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
   }
 }
 

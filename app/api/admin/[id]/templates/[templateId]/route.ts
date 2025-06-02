@@ -1,7 +1,7 @@
 import { VerifyIsAdmin } from "@/core/verifyIsAdmin";
 import prisma from "@/lib/prisma.config";
 import { TemplateSchema } from "@/validators/template.validator";
-
+export const runtime = 'nodejs';
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string, templateId: string }> }) {
   const { id, templateId } = await params;
   await VerifyIsAdmin(request, id);

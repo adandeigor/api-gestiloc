@@ -3,8 +3,8 @@ import prisma from "@/lib/prisma.config";
 import { CompanyValidator, CompanyUpdateValidator } from "@/validators/company.validator";
 import { z } from "zod";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function GET(req: Request, { params }: { params: Promise<{ id: string } > }) {
+    const { id } = await params;
     if (!id || isNaN(parseInt(id)) || parseInt(id) <= 0) {
         return Response.json({ error: "ID invalide ou manquant" }, { status: 400 });
     }

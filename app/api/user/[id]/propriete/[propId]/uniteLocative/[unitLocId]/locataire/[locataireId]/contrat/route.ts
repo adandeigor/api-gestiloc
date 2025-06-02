@@ -37,6 +37,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 }
 
+
 export async function GET(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string }> }) {
     const { id, unitLocId, locataireId } = await params;
     await VerifyUserSession(request, id);

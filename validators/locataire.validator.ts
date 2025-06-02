@@ -17,3 +17,5 @@ export const LocataireUpdateValidator = z.object({
     carte_identite: z.string().optional(),
     photo_identite: z.string().optional().nullable()
 });
+export type LocataireValidatorType = z.infer<typeof LocataireValidator>;
+export type LocataireUpdateValidatorType = z.infer<typeof LocataireUpdateValidator>;

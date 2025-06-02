@@ -1,13 +1,33 @@
 import { NextResponse, NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
 import prisma from './lib/prisma.config';
-export const runtime = 'nodejs';
-// Liste des routes publiques (aucune authentification JWT requise)
 
+export const runtime = 'nodejs';
+
+// Liste des routes publiques (aucune authentification JWT requise)
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
+
+  // Créer une réponse de base
   const response = NextResponse.next();
+
+  // Ajouter les en-têtes CORS
+  response.headers.set('Access-Control-Allow-Origin', process.env.FRONTEND_URL || '*');
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Authorization-JWT');
+
+  // Gérer les requêtes OPTIONS (preflight CORS)
+  if (req.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Origin': process.env.FRONTEND_URL || '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, Authorization-JWT',
+      },
+    });
+  }
 
   // Vérifier le token API pour toutes les routes
   const apiAccessToken = req.headers.get('authorization')?.replace('Bearer ', '');

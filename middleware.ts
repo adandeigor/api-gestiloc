@@ -70,14 +70,7 @@ export async function middleware(req: NextRequest) {
       const requestHeaders = new Headers(req.headers);
       requestHeaders.set('user', JSON.stringify({ userId: decoded.userId, email: decoded.email }));
 
-      // Enregistrer un log d'audit
-      await prisma.auditLog.create({
-        data: {
-          gestionnaireId: decoded.userId,
-          action: 'ACCES_ROUTE',
-          details: `Accès à la route ${path} par ${decoded.email}`,
-        },
-      });
+ 
 
       return NextResponse.next({
         request: {

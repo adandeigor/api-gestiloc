@@ -10,8 +10,8 @@ const EtatDesLieuxValidator = z.object({
     details: Details,
 })
 export async function GET(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string, contratId: string }> }) {
-    const { id, propId, unitLocId, locataireId, contratId } = await params;
-    const user = await VerifyUserSession(request, id);
+    const { id, contratId } = await params;
+    await VerifyUserSession(request, id);
     try {
         const etatDesLieux = await prisma.etatDesLieux.findMany({
             where: {
@@ -36,7 +36,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string, propId: string, unitLocId: string, locataireId: string, contratId: string }> }) {
-    const { id, propId, unitLocId, locataireId, contratId } = await params;
+    const { id, unitLocId, locataireId, contratId } = await params;
     const user = await VerifyUserSession(request, id);
     const body = await request.json();
     const validatedData = EtatDesLieuxValidator.parse(body);

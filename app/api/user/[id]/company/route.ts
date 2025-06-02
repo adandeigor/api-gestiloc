@@ -1,7 +1,6 @@
 import { VerifyUserSession } from "@/core/verifyUserSession";
 import prisma from "@/lib/prisma.config";
 import { CompanyValidator, CompanyUpdateValidator } from "@/validators/company.validator";
-import { de } from "@faker-js/faker";
 import { z } from "zod";
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {

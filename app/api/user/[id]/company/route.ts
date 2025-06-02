@@ -157,8 +157,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string } > }) {
+    const { id } = await params;
     if (!id || isNaN(parseInt(id)) || parseInt(id) <= 0) {
         return Response.json({ error: "ID invalide ou manquant" }, { status: 400 });
     }

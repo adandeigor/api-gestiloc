@@ -1,8 +1,8 @@
 import { VerifyUserSession } from "@/core/verifyUserSession";
 import prisma from "@/lib/prisma.config";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     if (!id || isNaN(parseInt(id)) || parseInt(id) <= 0) {
         return Response.json({ error: "ID invalide ou manquant" }, { status: 400 });
     }

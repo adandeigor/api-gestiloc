@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma.config";
-export async function POST(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   if (!id) {
     return Response.json({ error: "ID manquant" }, { status: 400 });
   }

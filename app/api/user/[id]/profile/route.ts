@@ -1,7 +1,6 @@
 import { VerifyUserSession } from "@/core/verifyUserSession";
 import prisma from "@/lib/prisma.config";
 import { ProfileValidator } from "@/validators/profile.validator";
-import { createClient } from "@supabase/supabase-js";
 import { NextRequest } from "next/server";
 
 

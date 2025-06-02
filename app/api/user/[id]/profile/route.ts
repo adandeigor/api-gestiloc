@@ -4,10 +4,6 @@ import { ProfileValidator } from "@/validators/profile.validator";
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest } from "next/server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

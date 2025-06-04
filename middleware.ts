@@ -66,6 +66,24 @@ export async function middleware(req: NextRequest) {
         );
       }
 
+      // Restriction d'accès pour les comptes EN_ATTENTE sur certaines routes
+      const restrictedPaths = [
+        /^\/api\/user\/\d+\/stats$/,
+        /^\/api\/user\/\d+\/propriete(\/.*)?$/,
+        /^\/api\/user\/\d+\/profile$/,
+        /^\/api\/user\/\d+\/company$/,
+        /^\/api\/user\/\d+\/auditlog$/,
+      ];
+      if (
+        user.statut === 'EN_ATTENTE' &&
+        restrictedPaths.some((regex) => regex.test(path))
+      ) {
+        return NextResponse.json(
+          { error: 'Votre compte doit être validé pour accéder à cette ressource.' },
+          { status: 403, headers: response.headers }
+        );
+      }
+
       // Ajouter les informations de l'utilisateur à la requête
       const requestHeaders = new Headers(req.headers);
       requestHeaders.set('user', JSON.stringify({ userId: decoded.userId, email: decoded.email }));
@@ -78,7 +96,7 @@ export async function middleware(req: NextRequest) {
         },
         headers: response.headers,
       });
-    } catch (error) {
+    } catch  {
       return NextResponse.json(
         { error: 'Token JWT invalide' },
         { status: 401, headers: response.headers }

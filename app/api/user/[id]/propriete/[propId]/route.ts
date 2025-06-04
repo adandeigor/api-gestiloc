@@ -47,6 +47,17 @@ export async function DELETE (request:Request, { params }: { params: Promise<{ i
                 headers: { "Content-Type": "application/json" }
             })
         }
+        // Vérification si la propriété a des unités locatives associées
+        const units = await prisma.uniteLocative.findMany({
+            where: { proprieteId: Number(propId) }
+        })
+        if (units.length > 0) {
+            return new Response(JSON.stringify({ error: "La propriété ne peut pas être supprimée car elle contient des unités locatives" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" }
+            })
+        }
+        
         // Suppression de la propriété
         const property = await prisma.propriete.delete({
             where: { id: Number(propId), gestionnaireId: user.id }

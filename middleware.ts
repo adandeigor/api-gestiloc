@@ -68,7 +68,6 @@ export async function middleware(req: NextRequest) {
 
       // Restriction d'accès pour les comptes EN_ATTENTE sur certaines routes
       const restrictedPaths = [
-        /^\/api\/user\/\d+\/stats$/,
         /^\/api\/user\/\d+\/propriete(\/.*)?$/,
         /^\/api\/user\/\d+\/profile$/,
         /^\/api\/user\/\d+\/company$/,

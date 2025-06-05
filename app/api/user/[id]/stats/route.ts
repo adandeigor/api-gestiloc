@@ -32,7 +32,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
             notifications: true,
             sessions: true,
             company: true,
-            auditLogs: true,
+            auditLogs: {
+                orderBy: {
+                    createdAt: 'desc',
+                }
+            },
             dossiergestionnaire: true,
         }
     })
